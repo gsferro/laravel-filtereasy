@@ -2,8 +2,29 @@
 
 namespace Gsferro\FilterEasy\Traits;
 
+/**
+ * @param $boolFilterFields
+ * @param $likeFilterFields
+ *
+ * @package Gsferro\FilterEasy
+ */
 trait FilterEasy
 {
+    /**
+     * Default attributes
+     *
+     * @return array
+     */
+    private function getBoolFilterFields(): array
+    {
+        return $this->boolFilterFields ?? [];
+    }
+
+    private function getLikeFilterFields(): array
+    {
+        return $this->likeFilterFields ?? [];
+    }
+
     /**
      * Add filtering generic.
      *
@@ -19,11 +40,34 @@ trait FilterEasy
         $tableName             = $this->getTable();
         $defaultFillableFields = $this->fillable;
         foreach ($filters as $field => $value) {
-            if (in_array($field, $this->boolFilterFields) && $value != null) {
+
+            // validation
+            if (empty($value)) {
+                continue;
+            }
+
+            if (in_array($field, $this->getBoolFilterFields()) && $value != null) {
                 $builder->where($field, (bool)$value);
                 continue;
             }
-            if (!in_array($field, $defaultFillableFields) || !$value) {
+
+            /*
+            |---------------------------------------------------
+            | Filter of date
+            |---------------------------------------------------
+            | using prefix :start and :end
+            | exemple:
+            |   created_at:start ->where(created_at, '>=', $value)
+            |   updated_at:end ->where(updated_at, '<=', $value)
+            */
+            if (strpos($field, ":start")) {
+                $field = str_replace(':start', '', $field);
+                $builder->whereDate($tableName . '.' . $field, '>=', "$value");
+                continue;
+            }
+            if (strpos($field, ":end")) {
+                $field = str_replace(':end', '', $field);
+                $builder->whereDate($tableName . '.' . $field, '<=', "$value");
                 continue;
             }
 
@@ -32,15 +76,15 @@ trait FilterEasy
             |  Has Relationship
             |---------------------------------------------------
             | exemple:
-            |   posts.post_id
+            |   posts:post_id
             |   $relName = posts
             |   $fk = post_id
             */
-            if (strpos($field, ".")) {
-                $relation = explode(".", $field);
+            if (strpos($field, ":")) {
+                $relation = explode(":", $field);
                 $relName  = $relation[ 0 ];
                 $fk       = $relation[ 1 ];
-                //insere o relacionamento na query
+
                 $builder = $builder->with($relName)
                     ->whereHas($relName, function ($query) use ($fk, $value) {
                         $query->where($fk, $value);
@@ -49,27 +93,11 @@ trait FilterEasy
                 continue;
             }
 
-            /*
-            |---------------------------------------------------
-            | Filter of date
-            |---------------------------------------------------
-            | using prefix _start and _end
-            | exemple:
-            |   created_at_start ->where(created_at, '>=', $value)
-            |   updated_at_end ->where(updated_at, '<=', $value)
-            */
-            if (strpos($field, "_start")) {
-                $field = str_replace('_start', '', $field);
-                $builder->where($tableName . '.' . $field, '>=', "$value");
-                continue;
-            }
-            if (strpos($field, "_end")) {
-                $field = str_replace('_end', '', $field);
-                $builder->where($tableName . '.' . $field, '<=', "$value");
+            if (!in_array($field, $defaultFillableFields) || !$value) {
                 continue;
             }
 
-            if (in_array($field, $this->likeFilterFields)) {
+            if (in_array($field, $this->getLikeFilterFields())) {
                 $builder->where($tableName . '.' . $field, 'LIKE', "%$value%");
             } else {
                 if (is_array($value)) {
