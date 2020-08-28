@@ -1,0 +1,15 @@
+{
+  "name": "gsferro/filtereasy",
+  "description": "Forma easy e generica de fazer filtros na model",
+  "authors": [
+    {
+      "name": "Guilherme Ferro",
+      "email": "gsferroti@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Gsferro\\FilterEasy\\": "src/"
+    }
+  }
+}
