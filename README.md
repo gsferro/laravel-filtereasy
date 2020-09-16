@@ -30,6 +30,20 @@ No controller:
 - Para verificação usando Like:
     criar o atributo $likeFilterFields devolvendo um array com os campos
 
+- Para relacionamento com Like:        
+    relName:fieldName
+    
+    exemplo:
+        posts:description aonde:
+        relName = posts
+        fieldName = description
+
+    criar o atributo $likeFilterFields devolvendo um array com os campos
+    repare que nesse caso, o atributo ficaria assim:
+    ```php
+        $likeFilterFields = ["posts:description"];
+    ```
+
 - Para verificação booleana:
     criar o atributo boolFilterFields devolvendo um array com os campos
     
