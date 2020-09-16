@@ -86,8 +86,12 @@ trait FilterEasy
                 $fk       = $relation[ 1 ];
 
                 $builder = $builder->with($relName)
-                    ->whereHas($relName, function ($query) use ($fk, $value) {
-                        $query->where($fk, $value);
+                    ->whereHas($relName, function ($query) use ($field, $fk, $value) {
+                        if (in_array($field, $this->getLikeFilterFields())) {
+                            $query->where($fk, 'LIKE', "%$value%");
+                        } else {
+                            $query->where($fk, $value);
+                        }
                     });
 
                 continue;
