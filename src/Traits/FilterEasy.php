@@ -53,13 +53,11 @@ trait FilterEasy
             */
             if (strpos($field, ":start")) {
                 $field = str_replace(':start', '', $field);
-                dump($field);
                 $builder->where($field, '>=', $value);
                 continue;
             }
             if (strpos($field, ":end")) {
                 $field = str_replace(':end', '', $field);
-                dump($field);
                 $builder->where($field, '<=', $value);
                 continue;
             }
