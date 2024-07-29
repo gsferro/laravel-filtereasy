@@ -1,5 +1,8 @@
 {
   "name": "gsferro/filtereasy",
+  "type": "library",
+  "license": "MIT",
+  "keywords" : ["Laravel", "Eloquent", "Query", "Builder", "Model", "Filter", "FilterEasy", "Filtering"],
   "description": "Forma easy e generica de fazer filtros na model",
   "authors": [
     {
