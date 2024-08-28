@@ -37,7 +37,7 @@ trait FilterEasy
                 continue;
             }
 
-            // default fields in fillable
+            // default fields in fillable or otherFilterFields
             if (!$this->checkFieldInFillableOrRelation($field)) {
                 continue;
             }
@@ -90,25 +90,41 @@ trait FilterEasy
                 continue;
             }
 
-            // bool
+            /*
+            |---------------------------------------------------
+            |  Boolean
+            |---------------------------------------------------
+            */
             if ($this->checkFieldInBoolFilterFields($field)) {
                 $builder->where($field, (bool)$value);
                 continue;
             }
 
-            // Like
+            /*
+            |---------------------------------------------------
+            |  Like
+            |---------------------------------------------------
+            */
             if ($this->checkFieldInLikeFilterFields($field)) {
                 $builder->where($field, 'LIKE', "%$value%");
                 continue;
             }
 
-            // in
+            /*
+            |---------------------------------------------------
+            |  In
+            |---------------------------------------------------
+            */
             if (is_array($value)) {
                 $builder->whereIn($field, $value);
                 continue;
             }
 
-            // exact
+            /*
+            |---------------------------------------------------
+            | Default
+            |---------------------------------------------------
+            */
             $builder->where($field, $value);
         }
 
@@ -137,25 +153,41 @@ trait FilterEasy
     }
 
     /**
-     * Checks if a given field is either a relation or in the fillable array.
+     * Retrieves the array of fields that are used for other filtering.
+     *
+     * @return array The array of fields.
+     */
+    private function getOtherFilterFields(): array
+    {
+        return $this->otherFilterFields ?? [];
+    }
+
+    /**
+     * Checks if a given field is either a relation or in the fillable and other filter array.
      *
      * @param  string  $field  The field to check.
      * @return bool Returns true if the field is a relation or in the fillable array, false otherwise.
      */
     private function checkFieldInFillableOrRelation(string $field): bool
     {
-        // remove a condição especial de :start | :end e relation
+        // Remove a condition special of :start | :end and relation
+        // If the field contains a ":" symbol, it means that it is a special condition and removes it
+        // Ex: field:start -> field
         if (strpos($field, ":")) {
             $field = explode(":", $field)[0];
         }
 
-        // check if field is relation
+        // Check if field is relation
+        // If the method exists in the current class, it means that the field is a relation
         if (method_exists(__CLASS__, $field)) {
             return true;
         }
 
-        // check if field is in fillable
-        return in_array($field, $this->getFillable());
+        // Check if field is in fillable
+        // Get the fillable array and merge it with the other filter fields array
+        // If the field is in the merged array, it means that it is a fillable field or in other filter fields array
+        $columns = array_merge($this->getFillable(), $this->getOtherFilterFields());
+        return in_array($field, $columns);
     }
 
     /**

@@ -81,22 +81,36 @@ seguintes atributos, respectivamente:
 
 1. Para **Relacionamento**:
     
-- Utilize a notação `relationName:relationField` o pacote incluirá o relacionamento na query.
-- Esta notação não precisa estar no `$fillable`, mas o `relationName` precisa ser um relacionamento implementando na 
-  model.
-  -   Exemplo:
+   - Utilize a notação `relationName:relationField` o pacote incluirá o relacionamento na query.
+   - Esta notação não precisa estar no `$fillable`, mas o `relationName` precisa ser um relacionamento implementando na 
+     model.
+     -   Exemplo:
+           ```php
+           posts:title
+           relationName = posts
+           relationField = title
+           ```
+   - Caso queira utilizar o `like`, coloque o `relationName:relationField` no `$likeFilterFields`:
+       ```php
+       private array  $likeFilterFields = [
+           // demais campos
+           "posts:title",
+     ];
+       ```
+1. Caso use `$guarded` ou outros campos que não estão no `$fillable`:
+
+    - Inicialize o attributo ``$otherFilterFields``: 
         ```php
-        posts:title
-        relationName = posts
-        relationField = title
-        ```
-- Caso queira utilizar o `like`, coloque o `relationName:relationField` no `$likeFilterFields`:
-    ```php
-    private array  $likeFilterFields = [
-        // demais campos
-        "posts:title",
-  ];
-    ```
+       /*
+       |---------------------------------------------------
+       | FilterEasy
+       |---------------------------------------------------
+       */
+       private array $otherFilterFields = [
+       // coloque outros campos que não esteja no fillable
+       ];
+      ``` 
+    -  Exemplo: ``id``, ``uuid``, ``created_at`` , ``updated_at``, ``deleted_at``e etc.
 
 ### License
 
