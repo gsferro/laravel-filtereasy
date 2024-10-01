@@ -8,15 +8,20 @@
 </p>
 
 ------
-Forma fácil e generica de fazer filtros na model no Laravel 
 
-### Instalação:
+## Introdução
+
+O FilterEasy é um pacote PHP que permite aplicar filtros em consultas de banco de dados de forma fácil e eficiente. Com ele, você pode criar consultas mais complexas e personalizadas, sem precisar escrever código SQL extenso.
+
+Instalação 
+
+## Instalação:
 
 ```shell 
  composer require gsferro/filtereasy
 ```
 
-### Implementação:
+## Implementação:
 
 1. Na Model adicione a trait do pacote:
     ```php
@@ -112,6 +117,30 @@ seguintes atributos, respectivamente:
       ``` 
     -  Exemplo: ``id``, ``uuid``, ``created_at`` , ``updated_at``, ``deleted_at``e etc.
 
-### License
+## Recursos Adicionais
 
-- **[MIT license](https://opensource.org/licenses/MIT)**.
+1. Uso o `filterEasyRequest` quando voce quiser pegar tudo o que estiver vindo do `request` sem precisar pasa-los 
+   por paramentro 
+
+## Solução de Problemas
+Se você encontrar algum problema ao usar o `FilterEasy`, verifique se:
+
+- A consulta de banco de dados está correta.
+- Os filtros estão a ser aplicados corretamente.
+- A versão do pacote está atualizada.
+- Recursos Adicionais
+- Se você inicializou os atributos na model
+- Se você tiver um novo campo no model que não estiver listado
+- Se você tiver um relacionamento que não estiver implementado na model
+
+## Contribuição
+Se você deseja contribuir com o `FilterEasy`, por favor, siga as seguintes etapas:
+
+1. Faça um fork do repositório.
+1. Crie uma branch para sua contribuição.
+1. Faça as alterações necessárias.
+1. Envie um pull request.
+
+## License
+
+O FilterEasy é licenciado sob a licença MIT. Leia o arquivo **[LICENSE](https://opensource.org/licenses/MIT)** para mais informações.
