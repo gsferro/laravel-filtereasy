@@ -175,11 +175,10 @@ seguintes atributos, respectivamente:
    ```php
     public function index(): View
     {
-        $count = $this->repository?->count();
+        // set filtereasy
         $this->repository->pushCriteria(new FilterEasyCriteria);
 
         return view('index', [
-            'count' => $count,
             'model' => $this->repository,
         ]);
     }
