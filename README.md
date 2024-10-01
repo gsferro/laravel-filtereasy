@@ -145,6 +145,45 @@ seguintes atributos, respectivamente:
 
 1. Use o `filterEasyRequest()`, como `scope`, para pegar todos os dados do request sem precisar passá-los por 
    parâmetro. Pois ele chamara o `filterEasy` pasando a facade `request()->all()` como parâmetro 
+1. Se você utilizar o pacote `prettus/l5-repository` ou qualquer outro para `Repository`, recomendo criar a classe 
+   `FilterEasyCriteria` já implementando o 
+   `filterEasyRequest()`
+   1. Implementando assim:
+    ```php
+    <?php
+    
+    namespace App\Criteria;
+    
+    use Prettus\Repository\Contracts\CriteriaInterface;
+    use Prettus\Repository\Contracts\RepositoryInterface;
+    
+    class FilterEasyCriteria implements CriteriaInterface
+    {
+        /**
+         * Apply criteria in query repository
+         *
+         * @param  string  $model
+         * @return mixed
+         */
+        public function apply($model, RepositoryInterface $repository)
+        {
+            return $model->filterEasyRequest();
+        }
+    }
+    ```
+   2. E para usar, bastando simplesmente: 
+   ```php
+    public function index(): View
+    {
+        $count = $this->repository?->count();
+        $this->repository->pushCriteria(new FilterEasyCriteria);
+
+        return view('index', [
+            'count' => $count,
+            'model' => $this->repository,
+        ]);
+    }
+    ```
 
 ## Solução de Problemas
 Se você encontrar algum problema ao usar o `FilterEasy`, verifique se:
