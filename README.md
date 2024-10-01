@@ -118,7 +118,7 @@ seguintes atributos, respectivamente:
     -  Exemplo: ``id``, ``uuid``, ``created_at`` , ``updated_at``, ``deleted_at``e etc.
 
 1. Caso queria fazer um `alias` ou precise com um unico paramentro pesquisar em várias colunas (muito comum em apis):
-    - Inicialize o attributo `protected array $combinedFilterFields`:
+    - Inicialize o atributo `$combinedFilterFields`:
     - Exemplo:
       ```php
       /*
@@ -126,7 +126,7 @@ seguintes atributos, respectivamente:
       | FilterEasy
       |---------------------------------------------------
       */
-      protected array $combinedFilterFields = [
+      private array $combinedFilterFields = [
        'client' => [
           'name' => 'like',
           'id' => '=',
@@ -143,8 +143,8 @@ seguintes atributos, respectivamente:
 
 ## Recursos Adicionais
 
-1. Uso o `filterEasyRequest` quando voce quiser pegar tudo o que estiver vindo do `request` sem precisar pasa-los 
-   por paramentro 
+1. Use o `filterEasyRequest()`, como `scope`, para pegar todos os dados do request sem precisar passá-los por 
+   parâmetro. Pois ele chamara o `filterEasy` pasando a facade `request()->all()` como parâmetro 
 
 ## Solução de Problemas
 Se você encontrar algum problema ao usar o `FilterEasy`, verifique se:
