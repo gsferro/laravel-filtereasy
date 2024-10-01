@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @param  array<int, string>  $likeFilterFields
  * @param  array<int, string>  $boolFilterFields
+ * @param  array<string, array<string, string>> $combinedFilterFields
  *
  * @author Gsferro
  * @package Gsferro\FilterEasy
@@ -112,10 +113,45 @@ trait FilterEasy
 
             /*
             |---------------------------------------------------
+            | Combined Filters
+            |---------------------------------------------------
+            |
+            | Antes do 'In' pois o value é um array
+            |
+            | Ex: ['<field: que vem do request>' => ['<key: é a coluna>' => '<operador>']]
+            |   [
+            |       'client' => [
+            |           'name' => 'like',
+            |           'id' => '=',
+            |           'age' => '>',
+            |       ]
+            |   ]
+            |
+            */
+            if ($this->checkFieldInCombinedFilterFields($field)) {
+                $builder->where(function (Builder $query) use ($field, $value) {
+                    // pega as colunas setadas
+                    $columns = $this->getCombinedFilterFields($field);
+                    // pega todas as colunas e coloca com or
+                    foreach ($columns as $column => $operation) {
+                        $query->orWhere($column,
+                            $operation,
+                            $operation == 'like' ? "{$value}%" : $value
+                        );
+                    }
+                });
+                continue;
+            }
+
+            /*
+            |---------------------------------------------------
             |  In
             |---------------------------------------------------
+            |
+            | redundância na verificação a cima 'Combined Filters'
+            |
             */
-            if (is_array($value)) {
+            if (is_array($value) && !$this->checkFieldInCombinedFilterFields($field)) {
                 $builder->whereIn($field, $value);
                 continue;
             }
@@ -198,7 +234,7 @@ trait FilterEasy
         // Get the fillable array and merge it with the other filter fields array
         // If the field is in the merged array, it means that it is a fillable field or in other filter fields array
         $columns = array_merge($this->getFillable(), $this->getOtherFilterFields());
-        return in_array($field, $columns);
+        return in_array($field, $columns) || array_key_exists($field, $this->getCombinedFilterFields());
     }
 
     /**
@@ -223,5 +259,34 @@ trait FilterEasy
     {
         // check if field is in boolFilterFields
         return in_array($field, $this->getBoolFilterFields());
+    }
+
+    /**
+     * Checks if a given field is a key in the combined filter fields.
+     *
+     * @param string $field The field to check.
+     * @return bool Returns true if the field is a key in the combined filter fields, false otherwise.
+     */
+    private function checkFieldInCombinedFilterFields(string $field): bool
+    {
+        // check if field is key in getCombinedFilterFields
+        return array_key_exists($field, $this->getCombinedFilterFields());
+    }
+
+    /**
+     * Retrieves the combined filter fields array, or a specific key's value within it.
+     *
+     * @param string|null $key The key to retrieve from the combined filter fields array, or null to retrieve the entire array.
+     * @return array The combined filter fields array, or the value of the specified key.
+     */
+    private function getCombinedFilterFields(?string $key = null): array
+    {
+        $combined = $this->combinedFilterFields ?? [];
+
+        if (empty($combined)) {
+            return [];
+        }
+
+        return is_null($key) ? $combined : $combined[$key];
     }
 }

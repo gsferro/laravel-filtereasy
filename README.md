@@ -117,6 +117,30 @@ seguintes atributos, respectivamente:
       ``` 
     -  Exemplo: ``id``, ``uuid``, ``created_at`` , ``updated_at``, ``deleted_at``e etc.
 
+1. Caso queria fazer um `alias` ou precise com um unico paramentro pesquisar em várias colunas (muito comum em apis):
+    - Inicialize o attributo `protected array $combinedFilterFields`:
+    - Exemplo:
+      ```php
+      /*
+      |---------------------------------------------------
+      | FilterEasy
+      |---------------------------------------------------
+      */
+      protected array $combinedFilterFields = [
+       'client' => [
+          'name' => 'like',
+          'id' => '=',
+          'age' => '>',
+        ]
+      ];
+      ```
+      - Nesse caso, ele verificara o valor enviado na posição `client` dentro do `request` e ira setar na 
+        query com o `orWhere`; 
+      - Ex: Caso tenha enviado um request assim: `client=123`, o `sql` gerado sera:
+        ```sql
+         select * from users where (name like '123%' or id = 123 or age > 123)
+        ```
+
 ## Recursos Adicionais
 
 1. Uso o `filterEasyRequest` quando voce quiser pegar tudo o que estiver vindo do `request` sem precisar pasa-los 
