@@ -133,6 +133,17 @@ trait FilterEasy
     }
 
     /**
+     * Applies filters to the query builder based on the current request.
+     *
+     * @param Builder $query The query builder instance.
+     * @return Builder The modified query builder instance.
+     */
+    public function scopeFilterEasyRequest(Builder $query): Builder
+    {
+        return $query->filtereasy(request()->all());
+    }
+
+    /**
      * Retrieves the array of fields that are used for boolean filtering.
      *
      * @return array The array of fields.
