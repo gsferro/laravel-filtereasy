@@ -53,7 +53,7 @@ trait FilterEasy
             }
 
             // default fields in fillable or otherFilterFields
-            if (!$this->checkFieldInFillableOrRelation($field)) {
+            if (!$this->checkFieldIsEnabledToUse($field)) {
                 continue;
             }
 
@@ -229,7 +229,7 @@ trait FilterEasy
      * @param  string  $field  The field to check.
      * @return bool Returns true if the field is a relation or in the fillable array, false otherwise.
      */
-    private function checkFieldInFillableOrRelation(string $field): bool
+    private function checkFieldIsEnabledToUse(string $field): bool
     {
         // Remove a condition special of :start | :end and relation
         // If the field contains a ":" symbol, it means that it is a special condition and removes it
