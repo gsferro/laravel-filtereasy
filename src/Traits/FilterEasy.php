@@ -107,6 +107,20 @@ trait FilterEasy
 
             /*
             |---------------------------------------------------
+            |  Nullable
+            |---------------------------------------------------
+            |
+            | if true: whereNotNull
+            | if false: whereNull
+            |
+            */
+            if ($this->checkFieldInNullableFilterFields($field)) {
+                $value ? $builder->whereNotNull($field) : $builder->whereNull($field);
+                continue;
+            }
+
+            /*
+            |---------------------------------------------------
             |  Boolean
             |---------------------------------------------------
             */
@@ -193,6 +207,11 @@ trait FilterEasy
         return $query->filtereasy(request()->all());
     }
 
+    private function getNullableFilterFields(): array
+    {
+        return $this->nullableFilterFields ?? [];
+    }
+
     /**
      * Retrieves the array of fields that are used for boolean filtering.
      *
@@ -247,7 +266,7 @@ trait FilterEasy
         // Check if field is in fillable
         // Get the fillable array and merge it with the other filter fields array
         // If the field is in the merged array, it means that it is a fillable field or in other filter fields array
-        $columns = array_merge($this->getFillable(), $this->getOtherFilterFields());
+        $columns = array_merge($this->getFillable(), $this->getOtherFilterFields(), $this->getNullableFilterFields());
         return in_array($field, $columns) || array_key_exists($field, $this->getCombinedFilterFields());
     }
 
@@ -273,6 +292,12 @@ trait FilterEasy
     {
         // check if field is in boolFilterFields
         return in_array($field, $this->getBoolFilterFields());
+    }
+
+    private function checkFieldInNullableFilterFields(string $field): bool
+    {
+        // check if field is in boolFilterFields
+        return in_array($field, $this->getNullableFilterFields());
     }
 
     /**
