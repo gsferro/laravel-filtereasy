@@ -104,7 +104,7 @@ seguintes atributos, respectivamente:
        ```
 1. Caso use `$guarded` ou outros campos que não estão no `$fillable`:
 
-    - Inicialize o attributo ``$otherFilterFields``: 
+    - Inicialize o atributo ``$otherFilterFields``: 
         ```php
        /*
        |---------------------------------------------------
@@ -140,6 +140,26 @@ seguintes atributos, respectivamente:
         ```sql
          select * from users where (name like '123%' or id = 123 or age > 123)
         ```
+
+1. Para implementar uma consulta utilizando `whereNull` ou `whereNotNull`, no conceito de `exists` dados na tabela, 
+   basta inicializar o atributo `$nullableFilterFields` e passar o valor `boolean`, sendo `true|1` para 
+   `whereNotNull` e `false|0` para `whereNull`:
+
+    - Inicialize o atributo `$nullableFilterFields`:
+        ```php
+       /*
+       |---------------------------------------------------
+       | FilterEasy
+       |---------------------------------------------------
+       */
+       private array $nullableFilterFields = [
+       // coloque os campos que serão verificados se estão null
+       ];
+      ``` 
+    -  Exemplo: `updated_at=1` e `remember_token=false`
+      ```sql
+      select * from users where updated_at is not null and remember_token is null
+      ```
 
 ## Recursos Adicionais
 
