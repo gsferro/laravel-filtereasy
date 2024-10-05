@@ -28,9 +28,11 @@ trait FilterEasy
         | trata os valores que vierem em branco (diferente de null e 0)
         |---------------------------------------------------
         */
-        $filters = array_filter($filters, function ($item){
-            return is_null($item) || !!strlen($item);
-        });
+        if (!empty($filters)) {
+            $filters = array_filter($filters, function ($item) {
+                return is_null($item) || !!strlen($item);
+            });
+        }
 
         /*
         |---------------------------------------------------
