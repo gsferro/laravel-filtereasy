@@ -23,6 +23,20 @@ trait FilterEasy
      */
     public function scopeFilterEasy(Builder $builder, array $filters = []): Builder
     {
+        /*
+        |---------------------------------------------------
+        | trata os valores que vierem em branco (diferente de null e 0)
+        |---------------------------------------------------
+        */
+        $filters = array_filter($filters, function ($item){
+            return is_null($item) || !!strlen($item);
+        });
+
+        /*
+        |---------------------------------------------------
+        | Se for vazio, retorna o builder
+        |---------------------------------------------------
+        */
         if (empty($filters)) {
             return $builder;
         }
