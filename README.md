@@ -143,6 +143,8 @@ seguintes atributos, respectivamente:
 
 ## Recursos Adicionais
 
+1. Você não precisa sanitizar os dados antes de enviar, o pacote limpa os campos que vierem em branco (`''`) e `null`, 
+   mas aceita o `0` como um valor **válido**, pois pode ser usado como um operador `boleano`
 1. Use o `filterEasyRequest()`, como `scope`, para pegar todos os dados do request sem precisar passá-los por 
    parâmetro. Pois ele chamara o `filterEasy` pasando a facade `request()->all()` como parâmetro 
 1. Se você utilizar o pacote `prettus/l5-repository` ou qualquer outro para `Repository`, recomendo criar a classe 
