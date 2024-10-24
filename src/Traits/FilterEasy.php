@@ -137,7 +137,7 @@ trait FilterEasy
             |---------------------------------------------------
             */
             if ($this->checkFieldInLikeFilterFields($field)) {
-                $builder->where($field, 'LIKE', "%$value%");
+                $builder->where($field, 'like', "%$value%");
                 continue;
             }
 
@@ -166,7 +166,7 @@ trait FilterEasy
                     foreach ($columns as $column => $operation) {
                         $query->orWhere($column,
                             $operation,
-                            $operation == 'like' ? "{$value}%" : $value
+                            $operation == 'like' ? "%{$value}%" : $value
                         );
                     }
                 });
@@ -175,7 +175,7 @@ trait FilterEasy
 
             /*
             |---------------------------------------------------
-            |  In
+            | In
             |---------------------------------------------------
             |
             | redundância na verificação a cima 'Combined Filters'
