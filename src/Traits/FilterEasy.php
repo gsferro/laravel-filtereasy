@@ -30,6 +30,10 @@ trait FilterEasy
         */
         if (!empty($filters)) {
             $filters = array_filter($filters, function ($item) {
+                if (is_array($item)) {
+                    return array_filter($item);
+                }
+
                 return is_null($item) || !!strlen($item);
             });
         }
